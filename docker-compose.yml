@@ -1,0 +1,18 @@
+version: "3"
+services:
+  database:
+    image: "postgres:14"
+    environment:
+      POSTGRES_PASSWORD: test
+      POSTGRES_USER: test
+      POSTGRES_DB: test
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: "treasure:latest"
+    command: "--host=0.0.0.0 --port=8000"
+    ports:
+      - "8080:8000"
+    environment:
+      STORAGE_DSN: "host=database port=5432 database=test user=test password=test sslmode=disable"

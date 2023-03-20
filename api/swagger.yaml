@@ -1,0 +1,99 @@
+swagger: "2.0"
+info:
+  title: "Treasure API"
+  description: "SDN List"
+  version: 1.0.0
+host: localhost:8080
+basePath: /
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+  /update:
+    get:
+      operationId: updateList
+      responses:
+        200:
+          $ref: '#/responses/State'
+        503:
+          $ref: '#/responses/Error'
+  /state:
+    get:
+      operationId: serviceState
+      responses:
+        200:
+          $ref: '#/responses/State'
+        503:
+          $ref: '#/responses/Error'
+  /get_names:
+    get:
+      operationId: getNames
+      parameters:
+       - $ref: '#/parameters/name'
+       - $ref: '#/parameters/type'
+      responses:
+        200:
+          $ref: '#/responses/Persons'
+        503:
+          $ref: '#/responses/Error'
+
+parameters:
+  name:
+    in: query
+    name: name
+    type: string
+  type:  
+    in: query
+    name: type
+    type: string
+
+responses:
+  State:
+    description: success 200
+    schema:
+      $ref: '#/definitions/state'
+  Error:
+    description: service error
+    schema:
+      $ref: '#/definitions/error'
+  Persons:
+    description: persons info
+    schema:
+      $ref: '#/definitions/persons'
+
+definitions:
+  state:
+    type: object
+    properties:
+      result:
+        type: string
+      info:
+        type: string
+      code:
+        type: integer
+  error:
+    type: object
+    properties:
+      result:
+        type: string
+      info:
+        type: string
+      code:
+        type: integer
+  persons:
+    type: array
+    items:
+      $ref: '#/definitions/person'
+  person:
+    type: object
+    properties:
+      uid:
+        type: integer
+      first_name:
+        type: string
+      last_name:
+        type: string
