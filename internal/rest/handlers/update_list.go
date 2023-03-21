@@ -11,6 +11,7 @@ type ListUpdater interface {
 	UpdateList() error
 }
 
+// UpdateList requests external source and updates data
 func UpdateList(u ListUpdater) operations.UpdateListHandlerFunc {
 	return func(params operations.UpdateListParams) middleware.Responder {
 		err := u.UpdateList()

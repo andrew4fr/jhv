@@ -1,7 +1,5 @@
 create table if not exists sdn (
-    uid integer not null,
-    first_name varchar(50),
-    last_name varchar(50)
+    uid integer unique,
+    first_name varchar(100),
+    last_name varchar(100)
 );
-
-create unique index uid_idx on sdn(uid);

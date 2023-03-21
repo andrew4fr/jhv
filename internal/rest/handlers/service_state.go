@@ -13,6 +13,7 @@ type StateGetter interface {
 	GetState() *service.State
 }
 
+// ServiceState returns internal service state
 func ServiceState(g StateGetter) operations.ServiceStateHandlerFunc {
 	return func(params operations.ServiceStateParams) middleware.Responder {
 		st := g.GetState()

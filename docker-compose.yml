@@ -4,8 +4,6 @@ services:
     image: "postgres:14"
     environment:
       POSTGRES_PASSWORD: test
-      POSTGRES_USER: test
-      POSTGRES_DB: test
   app:
     build:
       context: .
@@ -15,4 +13,4 @@ services:
     ports:
       - "8080:8000"
     environment:
-      STORAGE_DSN: "host=database port=5432 database=test user=test password=test sslmode=disable"
+      STORAGE_DSN: "host=database port=5432 database=postgres user=postgres password=test sslmode=disable"

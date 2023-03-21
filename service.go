@@ -3,28 +3,37 @@ package treasure
 import (
 	"encoding/xml"
 	"net/http"
+	"strings"
 	"treasure/internal/rest/model"
 )
 
-const individualType string = "Individual"
+const (
+	individualType   string = "Individual"
+	sdnEntry         string = "sdnEntry"
+	strongSearchType string = "strong"
+)
 
 var busy bool
 
+// Entry represents sdnEntry node
 type Entry struct {
 	UID       int    `xml:"uid"`
-	FirstName string `xml:"first_name"`
-	LastName  string `xml:"last_name"`
+	FirstName string `xml:"firstName"`
+	LastName  string `xml:"lastName"`
 	SdnType   string `xml:"sdnType"`
 }
 
+// State for internal service state
 type State struct {
 	Code   int
 	Info   string
 	Result string
 }
 
+// Storage defines methods for storage operations
 type Storage interface {
-	GetNames(searchName, searchType string) (*model.Persons, error)
+	StrongGetNames(searchName string) (*model.Persons, error)
+	WeakGetNames(searchName string) (*model.Persons, error)
 	SaveEntry(uid int, firstName, lastName string) error
 	IsEmpty() bool
 }
@@ -42,7 +51,23 @@ func New(path string, stor Storage) *Service {
 }
 
 func (s *Service) GetNames(searchName, searchType string) (*model.Persons, error) {
-	return nil, nil
+	var (
+		err     error
+		persons *model.Persons
+	)
+
+	switch strings.ToLower(searchType) {
+	case strongSearchType:
+		persons, err = s.storage.StrongGetNames(searchName)
+	default:
+		persons, err = s.storage.WeakGetNames(searchName)
+
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return persons, nil
 }
 
 func (s *Service) GetState() *State {
@@ -89,7 +114,7 @@ func (s *Service) UpdateList() error {
 		switch se := t.(type) {
 		case xml.StartElement:
 			inElement = se.Name.Local
-			if inElement == "sdnEntry" {
+			if inElement == sdnEntry {
 				var entry Entry
 				decoder.DecodeElement(&entry, &se)
 				if entry.SdnType != individualType {

@@ -11,6 +11,7 @@ type NamesGetter interface {
 	GetNames(searchName, searchType string) (*model.Persons, error)
 }
 
+// GetNames gets persons by name
 func GetNames(g NamesGetter) operations.GetNamesHandlerFunc {
 	return func(params operations.GetNamesParams) middleware.Responder {
 		names, err := g.GetNames(*params.Name, *params.Type)
