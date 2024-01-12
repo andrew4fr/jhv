@@ -12,5 +12,8 @@ services:
     command: "--host=0.0.0.0 --port=8000"
     ports:
       - "8080:8000"
+    depends_on:
+      database:
+        condition: service_healthy
     environment:
       STORAGE_DSN: "host=database port=5432 database=postgres user=postgres password=test sslmode=disable"
